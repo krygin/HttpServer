@@ -20,7 +20,7 @@ public class HttpResponse extends BasicHttpMessage {
     }
 
     public byte[] getBytes() {
-        byte[] headers = (protocolVersion + " " + state + " \r\n" + this.headers + "\r\n").getBytes();
+        byte[] headers = (protocolVersion + " " + state + "\r\n" + this.headers + "\r\n").getBytes();
         byte[] body = this.body.getBytes();
         byte[] result = new byte[headers.length + body.length];
         int i;
