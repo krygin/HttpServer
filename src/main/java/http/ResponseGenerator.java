@@ -8,7 +8,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Date;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -48,18 +47,12 @@ public class ResponseGenerator {
             path = Paths.get(DOCUMENT_ROOT + request.getPath() + "index.html");
         }
         else {
-            long startUriToPath = System.nanoTime();
             path = Paths.get(DOCUMENT_ROOT + request.getPath());
-            long stopUriToPath = System.nanoTime();
-            log.log(Level.INFO, request.hashCode() + " " + "Getting Path: " + Long.toString(stopUriToPath - startUriToPath) + " ns");
         }
-        String apath = path.toAbsolutePath().toString();
+
         byte[] bytes;
         if (path.toFile().exists()) {
-            long startReadFile = System.nanoTime();
             bytes = Files.readAllBytes(path);
-            long stopReadFile = System.nanoTime();
-            log.log(Level.INFO, request.hashCode() + " " + "Reading file: " + Long.toString(stopReadFile - startReadFile) + " ns");
         }
         else {
             response = new HttpResponse(new ProtocolVersion("HTTP", 1, 1), new State(404, "Not found"));
@@ -70,7 +63,6 @@ public class ResponseGenerator {
                 response.setMessageBody(new MessageBody("<html><head></head><body>404 Not Found</body></html>".getBytes()));
             return response;
         }
-        long startFormResponse = System.nanoTime();
         response = new HttpResponse(new ProtocolVersion("HTTP", 1, 1), new State(200, "Access"));
         response.addHeader("Date", new Date().toString());
         response.addHeader("Server", "Krygin HTTP server");
@@ -79,9 +71,6 @@ public class ResponseGenerator {
         response.addHeader("Content-Type", ContentTypeFactory.getContentType(path.getFileName().toString()).toString());
         if (request.getMethod() == Method.GET)
             response.setMessageBody(new MessageBody(bytes));
-
-        long stopFormResponse = System.nanoTime();
-        log.log(Level.INFO, request.hashCode() + " " + "Forming response: " + Long.toString(stopFormResponse - startFormResponse) + " ns");
         return response;
     }
 }

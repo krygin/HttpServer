@@ -21,16 +21,12 @@ public class Headers {
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
         for (String key: headers.keySet()) {
-            stringBuilder.append(key + ": " + headers.get(key) + "\r\n");
+            stringBuilder.append(key).append(": ").append(headers.get(key)).append("\r\n");
         }
         return stringBuilder.toString();
     }
 
     public byte[] getBytes() {
-        StringBuilder stringBuilder = new StringBuilder();
-        for (String key: headers.keySet()) {
-            stringBuilder.append(key + ": " + headers.get(key) + "\r\n");
-        }
-        return stringBuilder.toString().getBytes();
+        return this.toString().getBytes();
     }
 }

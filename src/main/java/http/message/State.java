@@ -17,6 +17,6 @@ public class State {
     }
 
     public byte[] getBytes(){
-        return (code + " " + description).getBytes();
+        return this.toString().getBytes();
     }
 }

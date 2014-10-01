@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -30,15 +29,12 @@ public class Task {
 
         RequestParser requestParser = new RequestParser(inputStream);
         request = requestParser.parse();
-
-        long startGenerateTime = System.nanoTime();
         ResponseGenerator responseGenerator = new ResponseGenerator(request);
         response = responseGenerator.getResponse(DOCUMENT_ROOT);
-        long stopGenerateTime = System.nanoTime();
-        log.log(Level.INFO, request.hashCode() + " " + "Generating response:" + Long.toString(stopGenerateTime - startGenerateTime) + " ns");
 
         OutputStream outputStream = socket.getOutputStream();
         outputStream.write(response.getBytes());
+
         socket.close();
     }
 

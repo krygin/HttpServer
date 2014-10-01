@@ -31,9 +31,7 @@ public class Worker extends Thread {
             try {
                 task.process(DOCUMENT_ROOT);
             }
-            catch (RuntimeException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
+            catch (RuntimeException | IOException e) {
                 e.printStackTrace();
             }
         }
