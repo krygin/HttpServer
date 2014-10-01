@@ -1,34 +1,35 @@
+package thread_pool;
+
 import java.io.IOException;
-import java.net.Socket;
 
 /**
  * Created by Ivan on 17.09.2014 in 16:33.
  */
 public class Worker extends Thread {
-    private SocketQueue sockets;
+    private final String DOCUMENT_ROOT;
+    private final TaskQueue tasks;
 
-    public Worker(SocketQueue sockets) {
-        this.sockets = sockets;
+    public Worker(TaskQueue tasks, final String DOCUMENT_ROOT) {
+        this.tasks = tasks;
+        this.DOCUMENT_ROOT = DOCUMENT_ROOT;
     }
 
     @Override
     public void run() {
-        Socket socket;
+        Task task;
         while (true) {
-            synchronized (sockets) {
-                while (sockets.isEmpty()) {
+            synchronized (tasks) {
+                while (tasks.isEmpty()) {
                     try {
-                        sockets.wait();
+                        tasks.wait();
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                 }
-                socket = sockets.getSocket();
+                task = tasks.getTask();
             }
             try {
-                System.out.println("Sockets processed: " + socket.toString());
-                System.out.println(Thread.currentThread().toString());
-                socket.close();
+                task.process(DOCUMENT_ROOT);
             }
             catch (RuntimeException e) {
                 e.printStackTrace();

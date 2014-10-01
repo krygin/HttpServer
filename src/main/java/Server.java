@@ -1,3 +1,6 @@
+import thread_pool.Task;
+import thread_pool.ThreadPool;
+
 import java.io.IOException;
 import java.net.Socket;
 
@@ -8,9 +11,9 @@ public class Server extends Thread {
     private ThreadPool threadPool;
     private ConnectionProcessor connectionProcessor;
 
-    public Server() throws IOException {
-        threadPool = new ThreadPool(10);
-        connectionProcessor = new ConnectionProcessor(8080);
+    public Server(final int PORT, final int THREAD_POOL_SIZE, final String DOCUMENT_ROOT) throws IOException {
+        threadPool = new ThreadPool(THREAD_POOL_SIZE, DOCUMENT_ROOT);
+        connectionProcessor = new ConnectionProcessor(PORT);
     }
 
     @Override
@@ -18,8 +21,7 @@ public class Server extends Thread {
         while (true) {
             try {
                 Socket socket = connectionProcessor.acceptConnection();
-                System.out.println("connection accepted");
-                threadPool.addSocket(socket);
+                threadPool.addTask(new Task(socket));
             } catch (IOException e) {
                 e.printStackTrace();
             }

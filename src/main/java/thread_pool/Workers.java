@@ -1,3 +1,5 @@
+package thread_pool;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,12 +9,11 @@ import java.util.List;
 public class Workers {
     private final List<Worker> workers = new ArrayList<Worker>();
 
-    public Workers(SocketQueue sockets, int poolSize) {
-        for (int i = 0; i < poolSize; i++) {
-            Worker worker = new Worker(sockets);
+    public Workers(TaskQueue sockets, final int THREAD_POOL_SIZE, final String DOCUMENT_ROOT) {
+        for (int i = 0; i < THREAD_POOL_SIZE; i++) {
+            Worker worker = new Worker(sockets, DOCUMENT_ROOT);
             workers.add(worker);
             worker.start();
         }
-
     }
 }
