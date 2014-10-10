@@ -1,15 +1,16 @@
 package thread_pool;
 
 import java.io.IOException;
+import java.nio.file.Path;
 
 /**
  * Created by Ivan on 17.09.2014 in 16:33.
  */
 public class Worker extends Thread {
-    private final String DOCUMENT_ROOT;
+    private final Path DOCUMENT_ROOT;
     private final TaskQueue tasks;
 
-    public Worker(TaskQueue tasks, final String DOCUMENT_ROOT) {
+    public Worker(TaskQueue tasks, Path DOCUMENT_ROOT) {
         this.tasks = tasks;
         this.DOCUMENT_ROOT = DOCUMENT_ROOT;
     }

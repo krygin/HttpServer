@@ -2,6 +2,8 @@ package http.message;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,7 +11,7 @@ import java.util.Map;
  * Created by Ivan on 24.09.2014 in 17:51.
  */
 public class URI {
-    private String path;
+    private Path path;
     private Map<String, String> parameters = new HashMap<String, String>();
 
 
@@ -17,7 +19,7 @@ public class URI {
         try {
             String decodedUrl = URLDecoder.decode(uri, "UTF-8");
             String[] parts = decodedUrl.split("\\?", 2);
-            path = parts[0];
+            path = Paths.get(parts[0].substring(1));
             if (parts.length == 2) {
                 parts = parts[1].split("&");
                 for (String part: parts) {
@@ -30,7 +32,7 @@ public class URI {
             e.printStackTrace();
         }
     }
-    public String getPath() {
+    public Path getPath() {
         return path;
     }
 

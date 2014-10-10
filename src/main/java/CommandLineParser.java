@@ -1,14 +1,17 @@
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 /**
  * Created by Ivan on 27.09.2014 in 14:22.
  */
 public class CommandLineParser {
-    private String DOCUMENT_ROOT;
+    private Path DOCUMENT_ROOT;
     private int THREAD_POOL_SIZE;
     private int PORT;
 
     public CommandLineParser(String[] args) {
         try {
-            DOCUMENT_ROOT = args[0];
+            DOCUMENT_ROOT = Paths.get(args[0]);
             PORT = Integer.parseInt(args[1]);
             THREAD_POOL_SIZE = Integer.parseInt(args[2]);
         } catch (Exception e) {
@@ -17,12 +20,12 @@ public class CommandLineParser {
     }
 
     public CommandLineParser() {
-        DOCUMENT_ROOT = "C:\\Users\\Ivan\\IdeaProjects\\HttpServer";
+        DOCUMENT_ROOT = Paths.get("C:\\Users\\Ivan\\IdeaProjects\\HttpServer");
         PORT = 80;
         THREAD_POOL_SIZE = 10;
     }
 
-    public String getDocumentRoot() {
+    public Path getDocumentRoot() {
         return DOCUMENT_ROOT;
     }
 

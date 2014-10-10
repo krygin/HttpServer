@@ -2,11 +2,9 @@ package http;
 
 import http.message.*;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Date;
 import java.util.logging.Logger;
 
@@ -21,7 +19,7 @@ public class ResponseGenerator {
         this.request = request;
     }
 
-    public HttpResponse getResponse(final String DOCUMENT_ROOT) throws IOException {
+    public HttpResponse getResponse(Path DOCUMENT_ROOT) throws IOException {
 
         HttpResponse response;
         if (request instanceof BadHttpRequest) {
@@ -41,13 +39,19 @@ public class ResponseGenerator {
             response.setMessageBody(new MessageBody("<html><head></head><body>405 Not allowed</body>e</html>".getBytes()));
             return response;
         }
+        Path requestPath = request.getPath();
+        Path path = DOCUMENT_ROOT.resolve(requestPath);
+        if (path.toFile().isDirectory())
+            path = path.resolve("index.html");
+        Path root1 = path.toAbsolutePath();
+        Path root2 = DOCUMENT_ROOT.toAbsolutePath();
 
-        Path path;
-        if (new File(DOCUMENT_ROOT + request.getPath()).isDirectory()) {
-            path = Paths.get(DOCUMENT_ROOT + request.getPath() + "index.html");
-        }
-        else {
-            path = Paths.get(DOCUMENT_ROOT + request.getPath());
+        if (!root1.toString().contains((root2.toString()))) {
+            response = new HttpResponse(new ProtocolVersion("HTTP", 1, 1), new State(403, "Forbidden"));
+            response.addHeader("Date", new Date().toString());
+            response.addHeader("Server", "Krygin HTTP server");
+            response.addHeader("Connection", "close");
+            return response;
         }
 
         byte[] bytes;
@@ -59,8 +63,6 @@ public class ResponseGenerator {
             response.addHeader("Date", new Date().toString());
             response.addHeader("Server", "Krygin HTTP server");
             response.addHeader("Connection", "close");
-            if (request.getMethod() == Method.GET)
-                response.setMessageBody(new MessageBody("<html><head></head><body>404 Not Found</body></html>".getBytes()));
             return response;
         }
         response = new HttpResponse(new ProtocolVersion("HTTP", 1, 1), new State(200, "Access"));

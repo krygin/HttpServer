@@ -1,6 +1,10 @@
 package http;
 
-import http.message.*;
+import http.message.Method;
+import http.message.ProtocolVersion;
+import http.message.URI;
+
+import java.nio.file.Path;
 
 /**
  * Created by Ivan on 22.09.2014 in 16:04.
@@ -25,7 +29,7 @@ public class BasicHttpRequest extends BasicHttpMessage implements HttpRequest {
         this.uri = uri;
     }
 
-    public String getPath() {
+    public Path getPath() {
         return uri.getPath();
     }
 

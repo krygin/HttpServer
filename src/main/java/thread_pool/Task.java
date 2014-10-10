@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.nio.file.Path;
 import java.util.logging.Logger;
 
 /**
@@ -22,13 +23,14 @@ public class Task {
 
     private static Logger log = Logger.getLogger(Task.class.getName());
 
-    public void process(final String DOCUMENT_ROOT) throws IOException {
+    public void process(Path DOCUMENT_ROOT) throws IOException {
         HttpRequest request;
         HttpResponse response;
         InputStream inputStream = socket.getInputStream();
 
         RequestParser requestParser = new RequestParser(inputStream);
         request = requestParser.parse();
+
         ResponseGenerator responseGenerator = new ResponseGenerator(request);
         response = responseGenerator.getResponse(DOCUMENT_ROOT);
 

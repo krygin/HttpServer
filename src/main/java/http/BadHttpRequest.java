@@ -2,6 +2,8 @@ package http;
 
 import http.message.Method;
 
+import java.nio.file.Path;
+
 /**
  * Created by Ivan on 24.09.2014 in 20:23.
  */
@@ -12,7 +14,7 @@ public class BadHttpRequest extends BasicHttpMessage implements HttpRequest {
     }
 
     @Override
-    public String getPath() {
+    public Path getPath() {
         return null;
     }
 
