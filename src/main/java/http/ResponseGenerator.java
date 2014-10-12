@@ -2,10 +2,12 @@ package http;
 
 import http.message.*;
 
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.nio.file.Files;
+import java.nio.channels.FileChannel;
 import java.nio.file.Path;
 import java.util.Date;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -27,7 +29,6 @@ public class ResponseGenerator {
             response.addHeader("Date", new Date().toString());
             response.addHeader("Server", "Krygin HTTP server");
             response.addHeader("Connection", "close");
-            response.setMessageBody(new MessageBody("<html><head></head><body>400 Bad request</body></html>".getBytes()));
             return response;
         }
 
@@ -36,7 +37,6 @@ public class ResponseGenerator {
             response.addHeader("Date", new Date().toString());
             response.addHeader("Server", "Krygin HTTP server");
             response.addHeader("Connection", "close");
-            response.setMessageBody(new MessageBody("<html><head></head><body>405 Not allowed</body>e</html>".getBytes()));
             return response;
         }
         Path requestPath = request.getPath();
@@ -53,10 +53,13 @@ public class ResponseGenerator {
             response.addHeader("Connection", "close");
             return response;
         }
-
-        byte[] bytes;
+        FileChannel fileChannel;
         if (path.toFile().exists()) {
-            bytes = Files.readAllBytes(path);
+            long x = System.nanoTime();
+            //fileChannel = FileChannel.open(path);
+            fileChannel = new FileInputStream(path.toFile()).getChannel();
+            long y = System.nanoTime();
+            log.log(Level.INFO, "Time: " + (y-x));
         }
         else {
             response = new HttpResponse(new ProtocolVersion("HTTP", 1, 1), new State(404, "Not found"));
@@ -69,10 +72,10 @@ public class ResponseGenerator {
         response.addHeader("Date", new Date().toString());
         response.addHeader("Server", "Krygin HTTP server");
         response.addHeader("Connection", "close");
-        response.addHeader("Content-Length", String.valueOf(bytes.length));
+        response.addHeader("Content-Length", String.valueOf(fileChannel.size()));
         response.addHeader("Content-Type", ContentTypeFactory.getContentType(path.getFileName().toString()).toString());
         if (request.getMethod() == Method.GET)
-            response.setMessageBody(new MessageBody(bytes));
+            response.setMessageBody(new MessageBody(fileChannel));
         return response;
     }
 }

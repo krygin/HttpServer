@@ -21,16 +21,7 @@ public class HttpResponse extends BasicHttpMessage {
 
     public byte[] getBytes() {
         byte[] headers = (protocolVersion + " " + state + "\r\n" + this.headers + "\r\n").getBytes();
-        byte[] body = this.body.getBytes();
-        byte[] result = new byte[headers.length + body.length];
-        int i;
-        for (i = 0; i < headers.length; i++) {
-            result[i] = headers[i];
-        }
-        int a = 2 + 3;
-        for (int j = 0; j < body.length; j++, i++) {
-            result[i] = body[j];
-        }
-        return result;
+
+        return headers;
     }
 }

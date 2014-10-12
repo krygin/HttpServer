@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.nio.channels.FileChannel;
+import java.nio.channels.SocketChannel;
 import java.nio.file.Path;
 import java.util.logging.Logger;
 
@@ -33,14 +35,19 @@ public class Task {
 
         ResponseGenerator responseGenerator = new ResponseGenerator(request);
         response = responseGenerator.getResponse(DOCUMENT_ROOT);
-
         OutputStream outputStream = socket.getOutputStream();
         outputStream.write(response.getBytes());
-
+        FileChannel fileChannel = response.getFileChannel();
+        long transferred = 0;
+        long total = fileChannel.size();
+        SocketChannel socketChannel = socket.getChannel();
+        if (fileChannel != null) {
+            while (transferred < total) {
+                long cur = fileChannel.transferTo(transferred, total, socketChannel);
+                transferred += cur;
+                total -= cur;
+            }
+        }
         socket.close();
-    }
-
-    public Socket getSocket() {
-        return socket;
     }
 }

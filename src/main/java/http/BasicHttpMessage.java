@@ -4,6 +4,8 @@ import http.message.Headers;
 import http.message.MessageBody;
 import http.message.ProtocolVersion;
 
+import java.nio.channels.FileChannel;
+
 /**
  * Created by Ivan on 22.09.2014 in 17:36.
  */
@@ -15,7 +17,7 @@ public abstract class BasicHttpMessage implements HttpMessage {
     protected BasicHttpMessage(ProtocolVersion protocolVersion) {
         this.protocolVersion = protocolVersion;
         this.headers = new Headers();
-        this.body = new MessageBody("".getBytes());
+        this.body = new MessageBody();
     }
 
     protected BasicHttpMessage(String version) {
@@ -42,5 +44,9 @@ public abstract class BasicHttpMessage implements HttpMessage {
     @Override
     public void setMessageBody(MessageBody messageBody) {
         this.body = messageBody;
+    }
+
+    public FileChannel getFileChannel() {
+        return body.getFileChannel();
     }
 }
