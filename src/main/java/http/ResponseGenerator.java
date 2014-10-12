@@ -2,11 +2,12 @@ package http;
 
 import http.message.*;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.Date;
+import java.util.EnumSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -56,8 +57,8 @@ public class ResponseGenerator {
         FileChannel fileChannel;
         if (path.toFile().exists()) {
             long x = System.nanoTime();
-            //fileChannel = FileChannel.open(path);
-            fileChannel = new FileInputStream(path.toFile()).getChannel();
+            fileChannel = FileChannel.open(path, EnumSet.of(StandardOpenOption.READ));
+            //fileChannel = new FileInputStream(path.toFile()).getChannel();
             long y = System.nanoTime();
             log.log(Level.INFO, "Time: " + (y-x));
         }

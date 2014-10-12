@@ -22,6 +22,8 @@ public class Server extends Thread {
         while (true) {
             try {
                 Socket socket = connectionProcessor.acceptConnection();
+                if (socket == null)
+                    continue;
                 threadPool.addTask(new Task(socket));
             } catch (IOException e) {
                 e.printStackTrace();

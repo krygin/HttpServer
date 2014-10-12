@@ -12,6 +12,7 @@ import java.net.Socket;
 import java.nio.channels.FileChannel;
 import java.nio.channels.SocketChannel;
 import java.nio.file.Path;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -39,15 +40,16 @@ public class Task {
         outputStream.write(response.getBytes());
         FileChannel fileChannel = response.getFileChannel();
         long transferred = 0;
-        long total = fileChannel.size();
         SocketChannel socketChannel = socket.getChannel();
+        long startTime = System.nanoTime();
         if (fileChannel != null) {
+            long total = fileChannel.size();
             while (transferred < total) {
-                long cur = fileChannel.transferTo(transferred, total, socketChannel);
-                transferred += cur;
-                total -= cur;
+                transferred += fileChannel.transferTo(transferred, 1024*16, socketChannel);
             }
         }
+        long finishTime = System.nanoTime();
+        log.log(Level.INFO, "Time of Transferring:" + (finishTime - startTime));
         socket.close();
     }
 }
