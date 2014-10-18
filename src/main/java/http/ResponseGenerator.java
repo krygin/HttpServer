@@ -78,7 +78,7 @@ public class ResponseGenerator {
         response.addHeader("Date", new Date().toString());
         response.addHeader("Server", "Krygin HTTP server");
         response.addHeader("Connection", "close");
-        response.addHeader("Content-Length", String.valueOf(fileChannel.size()));
+        response.addHeader("Content-Length", String.valueOf((path.toFile()).length()));
         response.addHeader("Content-Type", ContentTypeFactory.getContentType(path.getFileName().toString()).toString());
         if (request.getMethod() == Method.GET)
             response.setMessageBody(new MessageBody(fileChannel));
