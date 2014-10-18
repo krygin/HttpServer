@@ -20,7 +20,7 @@ public class ThreadPool {
     public void addTask(Task task) {
         synchronized (tasks) {
             tasks.addTask(task);
-            tasks.notify();
+            tasks.notifyAll();
         }
     }
 }
