@@ -7,6 +7,13 @@ public class ContentTypeFactory {
     public static ContentType getContentType(String filename) {
         String [] parts = filename.split("\\.");
         String extension = parts[parts.length - 1];
-        return ContentType.valueOf(extension.toUpperCase());
+        ContentType type;
+        try {
+            type= ContentType.valueOf(extension.toUpperCase());
+        }
+        catch (Exception e) {
+            type = ContentType.DEFAULT;
+        }
+        return type;
     }
 }

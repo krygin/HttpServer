@@ -12,7 +12,8 @@ public enum ContentType {
     PNG("image/png"),
     GIF("image/gif"),
     SWF("application/x-shockwave-flash"),
-    TXT("text/plain");
+    TXT("text/plain"),
+    DEFAULT("application/octet-stream");
 
     private String mime;
     ContentType(String mime) {
