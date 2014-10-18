@@ -4,11 +4,11 @@ import http.message.*;
 
 import java.io.IOException;
 import java.nio.channels.FileChannel;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.Date;
 import java.util.EnumSet;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -42,8 +42,16 @@ public class ResponseGenerator {
         }
         Path requestPath = request.getPath();
         Path path = DOCUMENT_ROOT.resolve(requestPath);
-        if (path.toFile().isDirectory())
+        if (path.toFile().isDirectory()) {
             path = path.resolve("index.html");
+            if (!Files.exists(path)) {
+                response = new HttpResponse(new ProtocolVersion("HTTP", 1, 1), new State(403, "Forbidden"));
+                response.addHeader("Date", new Date().toString());
+                response.addHeader("Server", "Krygin HTTP server");
+                response.addHeader("Connection", "close");
+                return response;
+            }
+        }
         Path root1 = path.toAbsolutePath();
         Path root2 = DOCUMENT_ROOT.toAbsolutePath();
 
@@ -56,11 +64,8 @@ public class ResponseGenerator {
         }
         FileChannel fileChannel;
         if (path.toFile().exists()) {
-            long x = System.nanoTime();
             fileChannel = FileChannel.open(path, EnumSet.of(StandardOpenOption.READ));
             //fileChannel = new FileInputStream(path.toFile()).getChannel();
-            long y = System.nanoTime();
-            log.log(Level.INFO, "Time: " + (y-x));
         }
         else {
             response = new HttpResponse(new ProtocolVersion("HTTP", 1, 1), new State(404, "Not found"));
