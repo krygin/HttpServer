@@ -52,10 +52,11 @@ public class ResponseGenerator {
                 return response;
             }
         }
-        Path root1 = path.toAbsolutePath();
-        Path root2 = DOCUMENT_ROOT.toAbsolutePath();
-
-        if (!root1.toString().contains((root2.toString()))) {
+        Path root1 = path;
+        Path root2 = DOCUMENT_ROOT;
+        System.out.println(root1);
+        System.out.println(root2);
+        if (!root1.startsWith(root2)) {
             response = new HttpResponse(new ProtocolVersion("HTTP", 1, 1), new State(403, "Forbidden"));
             response.addHeader("Date", new Date().toString());
             response.addHeader("Server", "Krygin HTTP server");
@@ -65,7 +66,6 @@ public class ResponseGenerator {
         FileChannel fileChannel;
         if (path.toFile().exists()) {
             fileChannel = FileChannel.open(path, EnumSet.of(StandardOpenOption.READ));
-            //fileChannel = new FileInputStream(path.toFile()).getChannel();
         }
         else {
             response = new HttpResponse(new ProtocolVersion("HTTP", 1, 1), new State(404, "Not found"));
