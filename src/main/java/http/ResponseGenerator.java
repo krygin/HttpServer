@@ -52,8 +52,8 @@ public class ResponseGenerator {
                 return response;
             }
         }
-        Path root1 = path;
-        Path root2 = DOCUMENT_ROOT;
+        Path root1 = path.toRealPath();
+        Path root2 = DOCUMENT_ROOT.toRealPath();
         System.out.println(root1);
         System.out.println(root2);
         if (!root1.startsWith(root2)) {
