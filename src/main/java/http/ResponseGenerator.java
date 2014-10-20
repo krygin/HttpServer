@@ -52,19 +52,17 @@ public class ResponseGenerator {
                 return response;
             }
         }
-        Path root1 = path.toRealPath();
-        Path root2 = DOCUMENT_ROOT.toRealPath();
-        System.out.println(root1);
-        System.out.println(root2);
-        if (!root1.startsWith(root2)) {
-            response = new HttpResponse(new ProtocolVersion("HTTP", 1, 1), new State(403, "Forbidden"));
-            response.addHeader("Date", new Date().toString());
-            response.addHeader("Server", "Krygin HTTP server");
-            response.addHeader("Connection", "close");
-            return response;
-        }
         FileChannel fileChannel;
-        if (path.toFile().exists()) {
+        if (Files.exists(path)) {
+            Path root1 = path.toRealPath();
+            Path root2 = DOCUMENT_ROOT.toRealPath();
+            if (!root1.startsWith(root2)) {
+                response = new HttpResponse(new ProtocolVersion("HTTP", 1, 1), new State(404, "Not found"));
+                response.addHeader("Date", new Date().toString());
+                response.addHeader("Server", "Krygin HTTP server");
+                response.addHeader("Connection", "close");
+                return response;
+            }
             fileChannel = FileChannel.open(path, EnumSet.of(StandardOpenOption.READ));
         }
         else {
